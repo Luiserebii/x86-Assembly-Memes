@@ -28,7 +28,7 @@ for_each_num:
 	
 	# Load num into %eax, and add
 	movl nums(, %ecx, 4), %eax
-	addl %eax, $ebx
+	addl %eax, %ebx
 
 	# Increment and jump
 	incl %ecx
