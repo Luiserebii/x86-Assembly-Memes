@@ -1,4 +1,6 @@
+#
 # Count all of the elements in a certain pre-defined list
+#
 
 .section .data
 
@@ -12,10 +14,26 @@ _start:
 
 	movl $0, %eax   # Set register for our count to 0
 	
-
 while_not_zero:
-	
-	cmpl
+
+	# Load in indexed number from list
+	movl nums(, %eax, 4), %ebx
+
+	# Test if we hit the end, so we can exit our loop
+	cmpl %ebx, $0
+	je end_while_not_zero
+
+	# If we've made it this far, increment, as we found a valid element
+	incl %eax
 
 end_while_not_zero:
 
+	# Return value as status code
+	# Since %eax holds the system call number, and %ebx the return,
+	# we have to set as necessary (we could simply use %ebx as the counter,
+        # but I think not doing so shows the logical flow better)
+	movl %eax, %ebx
+	movl $1, %eax
+
+	# Finally, interrupt into system call
+	int $0x80
