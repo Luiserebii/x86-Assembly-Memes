@@ -23,11 +23,22 @@ for_initializer:
 for_check_set_valid:
 	
 	# Set the b char to the a char at %ebx (does this work?)
-	movl apple(, %ebx, 4), banana(, %ebx, 4)
+	# Ah! Maybe, load in address to itself to register, add, and...?
+	movl $banana, %eax
+	# Use %edx to hold result of mul
+	movl $4, %edx
+	mull %ebx, %edx
+	# Finally, add result to %eax
+	addl %edx, %eax
+	# And, move to addr:
+	movl apple(, %ebx, 4), %eax
+	
+	# Increment
+	incl %ebx
 	
 	# Check the newly set value to see that it is not \0
 	movl banana(, %ebx, 4), %ecx
-	cmpl %0, %ecx
+	cmpl $0, %ecx
 
 	# If not zero, hop back
 	jne for_check_set_valid
