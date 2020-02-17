@@ -39,16 +39,25 @@ while_equal:
 if_equal:
 
 	# Ensure both are not 0 before moving on, otherwise,
-	# we can break out
-	# if(%ecx == 0 && %edx == 0) { jmp end_while_equal } else { while_equal }
+	# we can break out and increment counter
+	# if(%ecx == 0 && %edx == 0) { jmp end_while_equal } else { ++eax, jmp while_equal }
 	cmpl $0, %ecx
-	jne while_equal
+	jne if_equal_not_zero
 
 	cmpl $0, %edx
-	jne while_equal
+	jne if_equal_not_zero
+	# If we hit here, branch to the zero one
+	jmp if_equal_zero
+
+	if_equal_not_zero:
+
+		incl %eax
+		jmp while_equal
 	
-	# If we hit here, both are 0, so equal!
-	jmp end_while_equal
+	if_equal_zero:
+	
+		# If we hit here, both are 0, so equal!
+		jmp end_while_equal
 		
 end_while_equal:
 
