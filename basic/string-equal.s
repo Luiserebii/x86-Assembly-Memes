@@ -18,8 +18,8 @@ _start:
 	# Set counter to 0
 	movl $0, %eax
 
-	# Reserve %ebx for equality status
-	movl $0, ebx
+	# Reserve %ebx for equality status, and assume equal
+	movl $0, %ebx
 
 while_equal:
 	
@@ -29,6 +29,29 @@ while_equal:
 	movl str1(, %eax, 4), %ecx
 	movl str2(, %eax, 4), %edx
 
-	
+	cmpl %ecx, %edx
+	je if_equal
 
+	# If we hit here, not equal, so... 
+	movl $1, %ebx
+	jmp end_while_equal
+
+if_equal:
+
+	# Ensure both are not 0 before moving on, otherwise,
+	# we can break out
+	# if(%ecx == 0 && %edx == 0) { jmp end_while_equal } else { while_equal }
+	cmpl $0, %ecx
+	jne while_equal
+
+	cmpl $0, %edx
+	jne while_equal
+	
+	# If we hit here, both are 0, so equal!
+	jmp end_while_equal
+		
 end_while_equal:
+
+	# Set the exit system call number and interrupt out
+	movl $1, %eax
+	int $0x80

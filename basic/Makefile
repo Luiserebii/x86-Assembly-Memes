@@ -6,5 +6,8 @@ simple:
 count: 
 	$(MAKE) simple NAME=count
 
+string-equal:
+	$(MAKE) simple NAME=string-equal
+
 clean:
 	rm *.o a.out
