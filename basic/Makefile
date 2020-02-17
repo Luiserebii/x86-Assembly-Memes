@@ -1,5 +1,7 @@
+# Set name via make, i.e. make name=count
+
 all:
-	as count.s -o count.o && ld count.o -o count
+	as $(name).s -o $(name).o && ld $(name).o
 
 clean:
-	rm *.o count
+	rm *.o a.out
