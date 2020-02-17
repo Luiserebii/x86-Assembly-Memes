@@ -1,6 +1,9 @@
 #
 # Compare two strings and return 0 if equal
 #
+# NOTE: Not currently working, I think part of the issue is our
+# loading of chars into a 32-bit register
+#
 
 .section .data
 
