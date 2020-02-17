@@ -20,11 +20,12 @@ while_not_zero:
 	movl nums(, %eax, 4), %ebx
 
 	# Test if we hit the end, so we can exit our loop
-	cmpl %ebx, $0
+	cmpl $0, %ebx
 	je end_while_not_zero
 
 	# If we've made it this far, increment, as we found a valid element
 	incl %eax
+	jmp while_not_zero
 
 end_while_not_zero:
 
