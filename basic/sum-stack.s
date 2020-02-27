@@ -1,7 +1,7 @@
 .section .data
 
 nums:
-	.long 1, 2, 3
+	.long 10, 20, 30
 
 size:
 	.long 3
@@ -16,11 +16,13 @@ _start:
 	subl $12, %esp
 	
 	# We can't do a memory-to-memory move, so we need a register intermediary
-	movl nums, %ecx
+	# This is why we need %ecx
+	# Indexed addressing **requires** a register for the second, so we'll need
+	# to load one up via %edx
+	movl $0, %edx
+	movl nums(, %edx, 4), %ecx
 	movl %ecx, 12(%esp)
 	
-	# Indexed addressing **requires** a register for the second, so we'll need
-	# to load one up:
 	movl $1, %edx
 	movl nums(, %edx, 4), %ecx
 	movl %ecx, 8(%esp)
@@ -40,11 +42,11 @@ _start:
 	addl $4, %esp
 	
 	# Grab the second and pop
-	addl 8(%esp), %ebx
+	addl 4(%esp), %ebx
 	addl $4, %esp
 
 	# Grab the third and pop
-	addl 12(%esp), %ebx
+	addl 4(%esp), %ebx
 	addl $4, %esp
 
 	# Finally, load syscall and return
