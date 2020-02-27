@@ -24,5 +24,8 @@ sum-no-jmp:
 sum-stack:
 	$(MAKE) simple NAME=sum-stack
 
+sum-stack-pushl:
+	$(MAKE) simple NAME=sum-stack-pushl
+
 clean:
 	rm *.o a.out
