@@ -15,5 +15,8 @@ sum:
 string-copy:
 	$(MAKE) simple NAME=string-copy
 
+sum-no-jmp:
+	$(MAKE) simple NAME=sum-no-jmp
+
 clean:
 	rm *.o a.out
