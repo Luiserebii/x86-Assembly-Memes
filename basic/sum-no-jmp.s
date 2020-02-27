@@ -5,10 +5,10 @@
 .section .data
 
 nums: 
-	.long 1, 2, 3, 4, 5
+	.long 1, 2, 3
 
 size:
-	.long 5
+	.long 3
 
 .section .text
 .globl _start
@@ -30,6 +30,12 @@ for_loop:
 	
 	# ++i
 	incl %ecx
+	# jmp for_loop
+
+	# This line will break here:
+	# movl $for_loop, %eip
+	# Yielding: "sum-no-jmp.s:34: Error: unsupported instruction `mov'"
+	# Seems like %eip is read-only; not possible
 	jmp for_loop
 
 for_exit:

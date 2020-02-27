@@ -1,7 +1,10 @@
 # Set name via make, i.e. make NAME=count
 
+ASFLAGS=-g3 --32
+LDFLAGS=-m elf_i386
+
 simple:
-	as $(NAME).s -g -o $(NAME).o && ld $(NAME).o
+	as $(ASFLAGS) $(NAME).s -g -o $(NAME).o && ld $(LDFLAGS) $(NAME).o
 
 count: 
 	$(MAKE) simple NAME=count
@@ -17,6 +20,9 @@ string-copy:
 
 sum-no-jmp:
 	$(MAKE) simple NAME=sum-no-jmp
+
+sum-stack:
+	$(MAKE) simple NAME=sum-stack
 
 clean:
 	rm *.o a.out
