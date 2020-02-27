@@ -1,10 +1,10 @@
 .section .data
 
 nums:
-	long 1, 2, 3
+	.long 1, 2, 3
 
 size:
-	long 5
+	.long 3
 
 .section .text
 .globl _start
@@ -14,10 +14,21 @@ _start:
 	# Load all nums onto stack
 	# (Let's do this manually)
 	subl $12, %esp
-	movl nums(, 0, 4), 12(%esp)
-	movl nums(, 1, 4), 8(%esp)
-	movl nums(, 2, 4), 4(%esp)
-
+	
+	# We can't do a memory-to-memory move, so we need a register intermediary
+	movl nums, %ecx
+	movl %ecx, 12(%esp)
+	
+	# Indexed addressing **requires** a register for the second, so we'll need
+	# to load one up:
+	movl $1, %edx
+	movl nums(, %edx, 4), %ecx
+	movl %ecx, 8(%esp)
+	
+	movl $2, %edx
+	movl nums(, %edx, 4), %ecx
+	movl %ecx, 4(%esp)
+	
 	# (The alternate way is to movl first, subl after)
 	# (The way we address %esp is different in that case though)
 	
