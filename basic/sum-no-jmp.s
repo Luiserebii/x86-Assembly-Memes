@@ -5,17 +5,15 @@
 .section .data
 
 nums: 
-	.long 1, 2, 3
+	.long 1, 2, 3, 4, 5
 
 size:
-	.long 3
+	.long 5
 
 .section .text
 .globl _start
 
 _start:
-
-
 	# for(int i = 0; i < size; ++i)
 
 	# int i = 0;
@@ -24,14 +22,14 @@ _start:
 	movl $0, %ebx
 
 for_loop:
-	cmpl %ecx, size(, 0, 4)
+	cmpl %ecx, size
 	jle for_exit
 
 	# sum += size[i]
-	addl %ebx, nums(, %ecx, 4)
+	addl nums(, %ecx, 4), %ebx
 	
 	# ++i
-	incl %ebx
+	incl %ecx
 	jmp for_loop
 
 for_exit:
