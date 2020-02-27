@@ -21,15 +21,15 @@ _start:
 	# to load one up via %edx
 	movl $0, %edx
 	movl nums(, %edx, 4), %ecx
-	movl %ecx, 12(%esp)
+	movl %ecx, 8(%esp)
 	
 	movl $1, %edx
 	movl nums(, %edx, 4), %ecx
-	movl %ecx, 8(%esp)
+	movl %ecx, 4(%esp)
 	
 	movl $2, %edx
 	movl nums(, %edx, 4), %ecx
-	movl %ecx, 4(%esp)
+	movl %ecx, (%esp)
 	
 	# (The alternate way is to movl first, subl after)
 	# (The way we address %esp is different in that case though)
@@ -38,15 +38,15 @@ _start:
 	movl $0, %ebx
 	
 	# Grab the first and pop
-	addl 4(%esp), %ebx
+	addl (%esp), %ebx
 	addl $4, %esp
 	
 	# Grab the second and pop
-	addl 4(%esp), %ebx
+	addl (%esp), %ebx
 	addl $4, %esp
 
 	# Grab the third and pop
-	addl 4(%esp), %ebx
+	addl (%esp), %ebx
 	addl $4, %esp
 
 	# Finally, load syscall and return
