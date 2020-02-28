@@ -54,13 +54,13 @@ sum:
 	movl %esp, %ebp
 
 	# Process arguments
-for_init:
+s_for_init:
 	# Note that %eax will be containing the sum
 	movl $0, %eax
 	# This is the "real" piece of the for initializer
 	movl $0, %ecx
 	
-for_loop:
+s_for_loop:
 	cmpl %ecx, 8(%ebp)
 	jle for_exit
 	
@@ -70,13 +70,14 @@ for_loop:
 	imul %ecx, %edx
 
 	# No clue if this runs
-	addl %edx(%ebp), %eax
-	
-for_inc:
+	#addl %edx(%ebp), %eax
+	#addl (%ebp)(, %ecx, 4), %eax
+
+s_for_inc:
 	incl %ecx
 	jmp for_loop
 
-for_exit:	
+s_for_exit:	
 
 	# Sum function exit
 	movl %ebp, %esp
