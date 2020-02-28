@@ -27,5 +27,8 @@ sum-stack:
 sum-stack-pushl:
 	$(MAKE) simple NAME=sum-stack-pushl
 
+function-sum:
+	$(MAKE) simple NAME=function-sum
+
 clean:
 	rm *.o a.out
