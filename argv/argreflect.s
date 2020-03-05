@@ -7,7 +7,7 @@
 #
 
 .section .bss
-	.equ BUFFER_SIZE 1000
+	.equ BUFFER_SIZE, 1000
 	.lcomm buffer, BUFFER_SIZE
 
 .section .data
@@ -50,7 +50,7 @@ _start:
 #  Each is expected to be a null-terminated array of chars,
 #  and it is expected that each argument be the address to
 #  the first element in the array.
-.type, @function strcpy
+.type strcpy, @function
 strcpy:
 	pushl %ebp
 	movl %esp, %ebp
@@ -62,11 +62,19 @@ strcpy:
 
 while_copy:
 	# Set char in destination to char in source
+	movl (%ecx), %edx
+	movl %edx, (%eax)
+
 	# Increment both
-	# Check value of copied char, if 0, move to end
-	
+	incl %eax
+	incl %ecx
+
+	# Check value of copied char, if 0, move to end	
+	cmpl $0, %edx
+	je while_end
 
 while_end:
 
 	movl %ebp, %esp
 	popl %ebp
+	ret

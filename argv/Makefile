@@ -6,7 +6,7 @@ LDFLAGS=-m elf_i386
 main: argreflect link
 
 argreflect: 
-	as $(ASFLAGS) argreflect.s -g -o argreflect.o 
+	as $(ASFLAGS) argreflect.s -o argreflect.o 
 
 link: 
 	ld $(LDFLAGS) argreflect.o
