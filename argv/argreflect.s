@@ -41,3 +41,32 @@ _start:
 	# Exit
 	movl $1, %eax
 	int $0x80
+
+#=========
+# strcpy 
+#=========
+#  Takes two arguments, a destination and a source.
+#
+#  Each is expected to be a null-terminated array of chars,
+#  and it is expected that each argument be the address to
+#  the first element in the array.
+.type, @function strcpy
+strcpy:
+	pushl %ebp
+	movl %esp, %ebp
+	
+	# Copy each element into the destination, until '\0' found
+	# Uses %eax for destination, %ecx as source
+	movl 8(%ebp), %eax
+	movl 12(%ebp), %ecx
+
+while_copy:
+	# Set char in destination to char in source
+	# Increment both
+	# Check value of copied char, if 0, move to end
+	
+
+while_end:
+
+	movl %ebp, %esp
+	popl %ebp
