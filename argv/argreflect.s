@@ -62,16 +62,17 @@ strcpy:
 
 while_copy:
 	# Set char in destination to char in source
-	movl (%ecx), %edx
-	movl %edx, (%eax)
+	# Using least-significant piece of %edx
+	movb (%ecx), %dl
+    	movb %dl, (%eax)
 
 	# Increment both
 	incl %eax
 	incl %ecx
 
 	# Check value of copied char, if 0, move to end	
-	cmpl $0, %edx
-	je while_end
+	cmpb $0, %dl
+	jne while_copy
 
 while_end:
 
