@@ -177,7 +177,7 @@ itoa:
 	movl %esp, %ebp
 
 	# Make room for a few local variables on the stack:
-	.equ ITOA_NO_LVARS, 3
+	.equ ITOA_NO_LVARS, 4
 	.equ ITOA_LV_BYTES, ITOA_NO_LVARS * 4
 	subl $ITOA_LV_BYTES, %esp
 
@@ -192,6 +192,11 @@ itoa:
 
 	# Use var to hold the digit to keep track of
 	.equ ITOA_DIGIT, -12
+
+	# Use var to hold the address of the string to iterate through
+	.equ ITOA_STR, -16
+	movl 12(%ebp), %eax
+	movl %eax, ITOA_STR(%ebp)
 
 itoa_while_not_zero:
 	# while(n != 0)
@@ -209,19 +214,27 @@ itoa_while_not_zero:
 	# Set remainder (%) to digit, and quotient back to ATOI_N
 	movl %edx, ITOA_DIGIT(%ebp)
 	movl %eax, ITOA_N(%ebp)
-
-	# Multiply digit by multctr and set to result
-	movl ITOA_MULT_CTR(%ebp), %eax
-	# NOTE: As a shortcut, we could probably use %edx instead
-	imull ITOA_DIGIT(%ebp), %eax
-
+	
 	# "Increment" multctr by multiplying by base
 	imull %ecx
 	movl %eax, ITOA_MULT_CTR(%ebp)
 
+	# Set current string pos to digit equivalent, and increment
+	movl ITOA_STR(%ebp), %eax
+	.equ ITOA_0_CHAR, '0'
+	movl $ITOA_0_CHAR, %ecx
+	addl ITOA_DIGIT(%ebp), %ecx
+	
+	movl %ecx, (%eax)
+	incl ITOA_STR(%ebp)
+
 	jmp itoa_while_not_zero
 
 itoa_while_not_zero_end:
+	# Finally, cap string off with '\0' null terminator
+	movl ITOA_STR(%ebp), %eax
+	movl $0, (%eax)
+
 	movl %ebp, %esp
 	popl %ebp
 	ret
