@@ -55,13 +55,16 @@ _start:
 	call strcat
 
 	# argc is at 0, so:
-	pushl (%ebp)
 	pushl $buffer_temp
+	pushl (%ebp)
 	call itoa
+	addl $8, %esp	
 
-	# Ahhh, we're gonna need a function to convert the int into a string... nuts
-	#movl (%ebp), %eax
-	#movl %eax, -4(%ebp)
+	# Concat in argc num	
+	movl $buffer_temp, -4(%ebp)
+	call strcat
+
+	movl $endl, -4(%ebp)
 	call strcat
 
 	# Print buffer
