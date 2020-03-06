@@ -106,11 +106,11 @@ strcat:
 	movl 12(%ebp), %ecx
 
 while_src_not_0:
-	cmpl $0, (%ecx)
+	cmpl $0, (%eax)
 	je while_src_not_0_end
 
-	# Increment %ecx's address a byte to the next char
-	incb %cl
+	# Increment %eax's address a byte to the next char
+	incl %eax
 
 	jmp while_src_not_0
 
