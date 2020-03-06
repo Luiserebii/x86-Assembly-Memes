@@ -192,15 +192,35 @@ atoi:
 
 atoi_while_not_zero:
 	# while(n != 0)
-	cmpl $0, %edx
+	cmpl $0, ATOI_N(%ebp)
 	je atoi_while_not_zero_end
 
+	# Define dividend ATOI_N in %edx:%eax
+	movl $0, %edx
+	movl ATOI_N(%ebp), %eax
+
+	# Divide ATOI_N by 10 (10 being the base)
+	movl $10, %ecx
+	idivl %ecx
 	
+	# Set remainder (%) to digit, and quotient back to ATOI_N
+	movl %edx, ATOI_DIGIT(%ebp)
+	movl %eax, ATOI_N(%ebp)
+
+	# Multiply digit by multctr and set to result
+	movl ATOI_MULT_CTR(%ebp), %eax
+	# NOTE: As a shortcut, we could probably use %edx instead
+	imull ATOI_DIGIT(%ebp), %eax
+	addl %eax, ATOI_RES(%ebp)
+
+	# "Increment" multctr by multiplying by base
+	imull %ecx, ATOI_MULT_CTR(%ebp)
 
 	jmp atoi_while_not_zero
 
 atoi_while_not_zero_end:
-	
+	# Set res into return val
+	movl ATOI_RES(%ebp), %eax
 
 	movl %ebp, %esp
 	popl %ebp
