@@ -12,7 +12,9 @@
 
 .section .data
 title:
-	.ascii "=============\nargreflect\n=============\n\n\0"
+	.ascii "==============\nargreflect\n=============\n\n\0"
+meme:
+	.ascii "\nowo senpai pls notice me uwu\n"
 
 .section .text
 .globl _start
@@ -28,6 +30,11 @@ _start:
 	pushl $title
 	pushl $buffer
 	call strcpy
+
+	# Attempt strcat into buffer
+	pushl $meme
+	pushl $buffer
+	call strcat
 
 	# Print buffer
 	.equ WRITE_SYSCALL, 4
@@ -67,8 +74,8 @@ while_copy:
     	movb %dl, (%eax)
 
 	# Increment both
-	incb %al
-	incb %cl
+	incl %eax
+	incl %ecx
 
 	# Check value of copied char, if 0, move to end	
 	cmpb $0, %dl
@@ -116,8 +123,8 @@ while_cat_copy:
 	movb %dl, (%eax)
 
 	# Increment both
-	incb %cl
-	incb %al
+	incl %ecx
+	incl %eax
 
 	# Check value of copied char, if 0, move to end
 	cmpb $0, %dl
