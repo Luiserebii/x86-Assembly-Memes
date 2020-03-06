@@ -13,8 +13,12 @@
 .section .data
 title:
 	.ascii "==============\nargreflect\n=============\n\n\0"
-meme:
-	.ascii "\nowo senpai pls notice me uwu\n"
+name_init:
+	.ascii "name: \0"
+num_args_init:
+	.ascii "num of args: \0"
+endl:
+	.ascii "\n\0"
 
 .section .text
 .globl _start
@@ -31,8 +35,13 @@ _start:
 	pushl $buffer
 	call strcpy
 
-	# Attempt strcat into buffer
-	pushl $meme
+	# Concat in name field
+	pushl $name_init
+	pushl $buffer
+	call strcat
+	
+	.equ ARGV_NAME, 4
+	pushl ARGV_NAME(%ebp)
 	pushl $buffer
 	call strcat
 
