@@ -35,14 +35,21 @@ _start:
 	pushl $buffer
 	call strcpy
 
-	# Concat in name field
-	pushl $name_init
-	pushl $buffer
+	# Concat in init name field
+	movl $name_init, -4(%ebp)
 	call strcat
-	
+
+	# Concat in actual name arg
 	.equ ARGV_NAME, 4
-	pushl ARGV_NAME(%ebp)
-	pushl $buffer
+	# Idea here is to optimize; buffer has already been loaded onto the stack,
+	# so just modify the first argument and call again
+	movl ARGV_NAME(%ebp), %eax
+	movl %eax, -4(%ebp)
+	call strcat
+
+	# Concat closing
+	movl $endl, %eax
+	movl %eax, -4(%ebp)
 	call strcat
 
 	# Print buffer
