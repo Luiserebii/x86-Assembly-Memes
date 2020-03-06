@@ -157,13 +157,51 @@ while_cat_copy_end:
 	ret
 
 #=========
-# atoi
+# itoa
 #=========
 #  Takes two arguments, a 32-bit int and an address pointing to
 #  an array of chars.
 #
 #  It is assumed that the char array has enough space to fit the
 #  int; otherwise, the behavior is undefined.
-.type atoi, @function
+.type itoa, @function
 atoi:
+	pushl %ebp
+	movl %esp, %ebp
 
+	# Make room for a few local variables on the stack:
+	.equ ATOI_NO_LVARS, 4
+	.equ ATOI_LV_BYTES, ATOI_NO_LVARS * 4
+	subl $ATOI_LV_BYTES, %esp
+
+	# Use var as our return result, set to 0
+	.equ ATOI_RES, -4
+	movl $0, ATOI_RES(%ebp)
+
+	# Use var to hold the mult. counter
+	.equ ATOI_MULT_CTR, -8
+	movl $1, ATOI_MULT_CTR(%ebp)
+
+	# Use var to hold the 32-bit int to manipulate
+	.equ ATOI_N, -12
+	movl 8(%ebp), %eax
+	movl %eax, ATOI_N(%ebp)
+
+	# Use var to hold the digit to keep track of
+	.equ ATOI_DIGIT, -16
+
+atoi_while_not_zero:
+	# while(n != 0)
+	cmpl $0, %edx
+	je atoi_while_not_zero_end
+
+	
+
+	jmp atoi_while_not_zero
+
+atoi_while_not_zero_end:
+	
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
