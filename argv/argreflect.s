@@ -9,6 +9,7 @@
 .section .bss
 	.equ BUFFER_SIZE, 1000
 	.lcomm buffer, BUFFER_SIZE
+	.lcomm buffer_temp, BUFFER_SIZE
 
 .section .data
 title:
@@ -50,7 +51,13 @@ _start:
 	call strcat
 
 	# Concat in init num of args field
+	movl $num_args_init, -4(%ebp)
+	call strcat
+
 	# argc is at 0, so:
+	pushl (%ebp)
+	pushl $buffer_temp
+	call itoa
 
 	# Ahhh, we're gonna need a function to convert the int into a string... nuts
 	#movl (%ebp), %eax
@@ -165,63 +172,56 @@ while_cat_copy_end:
 #  It is assumed that the char array has enough space to fit the
 #  int; otherwise, the behavior is undefined.
 .type itoa, @function
-atoi:
+itoa:
 	pushl %ebp
 	movl %esp, %ebp
 
 	# Make room for a few local variables on the stack:
-	.equ ATOI_NO_LVARS, 4
-	.equ ATOI_LV_BYTES, ATOI_NO_LVARS * 4
-	subl $ATOI_LV_BYTES, %esp
-
-	# Use var as our return result, set to 0
-	.equ ATOI_RES, -4
-	movl $0, ATOI_RES(%ebp)
+	.equ ITOA_NO_LVARS, 3
+	.equ ITOA_LV_BYTES, ITOA_NO_LVARS * 4
+	subl $ITOA_LV_BYTES, %esp
 
 	# Use var to hold the mult. counter
-	.equ ATOI_MULT_CTR, -8
-	movl $1, ATOI_MULT_CTR(%ebp)
+	.equ ITOA_MULT_CTR, -4
+	movl $1, ITOA_MULT_CTR(%ebp)
 
 	# Use var to hold the 32-bit int to manipulate
-	.equ ATOI_N, -12
+	.equ ITOA_N, -8
 	movl 8(%ebp), %eax
-	movl %eax, ATOI_N(%ebp)
+	movl %eax, ITOA_N(%ebp)
 
 	# Use var to hold the digit to keep track of
-	.equ ATOI_DIGIT, -16
+	.equ ITOA_DIGIT, -12
 
-atoi_while_not_zero:
+itoa_while_not_zero:
 	# while(n != 0)
-	cmpl $0, ATOI_N(%ebp)
-	je atoi_while_not_zero_end
+	cmpl $0, ITOA_N(%ebp)
+	je itoa_while_not_zero_end
 
 	# Define dividend ATOI_N in %edx:%eax
 	movl $0, %edx
-	movl ATOI_N(%ebp), %eax
+	movl ITOA_N(%ebp), %eax
 
 	# Divide ATOI_N by 10 (10 being the base)
 	movl $10, %ecx
 	idivl %ecx
 	
 	# Set remainder (%) to digit, and quotient back to ATOI_N
-	movl %edx, ATOI_DIGIT(%ebp)
-	movl %eax, ATOI_N(%ebp)
+	movl %edx, ITOA_DIGIT(%ebp)
+	movl %eax, ITOA_N(%ebp)
 
 	# Multiply digit by multctr and set to result
-	movl ATOI_MULT_CTR(%ebp), %eax
+	movl ITOA_MULT_CTR(%ebp), %eax
 	# NOTE: As a shortcut, we could probably use %edx instead
-	imull ATOI_DIGIT(%ebp), %eax
-	addl %eax, ATOI_RES(%ebp)
+	imull ITOA_DIGIT(%ebp), %eax
 
 	# "Increment" multctr by multiplying by base
-	imull %ecx, ATOI_MULT_CTR(%ebp)
+	imull %ecx
+	movl %eax, ITOA_MULT_CTR(%ebp)
 
-	jmp atoi_while_not_zero
+	jmp itoa_while_not_zero
 
-atoi_while_not_zero_end:
-	# Set res into return val
-	movl ATOI_RES(%ebp), %eax
-
+itoa_while_not_zero_end:
 	movl %ebp, %esp
 	popl %ebp
 	ret
