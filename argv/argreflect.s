@@ -79,3 +79,33 @@ while_end:
 	movl %ebp, %esp
 	popl %ebp
 	ret
+
+#=========
+# strcat
+#=========
+#  Takes two arguments, a destination and a source.
+#
+#  Each is expected to be a null-terminated array of chars,
+#  and it is expected that each argument be the address to
+#  the first element in the array.
+.type strcat, @function
+strcat:
+	pushl %ebp
+	movl %esp, %ebp
+
+	# Load in addresses to registers
+	# Uses %eax for destination, %ecx as source
+	movl 8(%ebp), %eax
+	movl 12(%ebp), %ecx
+
+while_src_not_0:
+	cmpl $0, (%ecx)
+	je while_src_not_0_end
+
+	
+
+while_src_not_0_end:
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
