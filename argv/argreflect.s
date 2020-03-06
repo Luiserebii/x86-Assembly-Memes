@@ -30,9 +30,10 @@ _start:
 	.equ ARGC_NUM, 0
 	.equ ARGV_N, 4
 
-	# Write piece to buffer
-	pushl $title
-	pushl $buffer
+	# Write title to buffer, push $title and $buffer both onto stack
+	subl $8, %esp
+	movl $title, 4(%esp)
+	movl $buffer, (%esp)
 	call strcpy
 
 	# Concat in init name field
