@@ -67,8 +67,8 @@ while_copy:
     	movb %dl, (%eax)
 
 	# Increment both
-	incb %eax
-	incb %ecx
+	incb %al
+	incb %cl
 
 	# Check value of copied char, if 0, move to end	
 	cmpb $0, %dl
@@ -103,7 +103,7 @@ while_src_not_0:
 	je while_src_not_0_end
 
 	# Increment %ecx's address a byte to the next char
-	incb %ecx
+	incb %cl
 
 	jmp while_src_not_0
 
@@ -113,11 +113,11 @@ while_cat_copy:
 	# Set char in destination to char in source
 	# Using least-significant piece of %edx
 	movb (%ecx), %dl
-	movb %dl, %(eax)
+	movb %dl, (%eax)
 
 	# Increment both
-	incb %ecx
-	incb %eax
+	incb %cl
+	incb %al
 
 	# Check value of copied char, if 0, move to end
 	cmpb $0, %dl
