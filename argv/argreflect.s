@@ -27,9 +27,6 @@ _start:
 	# Capture current stack position into base pointer
 	movl %esp, %ebp
 
-	.equ ARGC_NUM, 0
-	.equ ARGV_N, 4
-
 	# Write title to buffer, push $title and $buffer both onto stack
 	subl $8, %esp
 	movl $title, 4(%esp)
@@ -49,8 +46,15 @@ _start:
 	call strcat
 
 	# Concat closing
-	movl $endl, %eax
-	movl %eax, -4(%ebp)
+	movl $endl, -4(%ebp)
+	call strcat
+
+	# Concat in init num of args field
+	# argc is at 0, so:
+
+	# Ahhh, we're gonna need a function to convert the int into a string... nuts
+	#movl (%ebp), %eax
+	#movl %eax, -4(%ebp)
 	call strcat
 
 	# Print buffer
@@ -151,3 +155,15 @@ while_cat_copy_end:
 	movl %ebp, %esp
 	popl %ebp
 	ret
+
+#=========
+# atoi
+#=========
+#  Takes two arguments, a 32-bit int and an address pointing to
+#  an array of chars.
+#
+#  It is assumed that the char array has enough space to fit the
+#  int; otherwise, the behavior is undefined.
+.type atoi, @function
+atoi:
+
