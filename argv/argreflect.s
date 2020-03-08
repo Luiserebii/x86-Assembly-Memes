@@ -132,7 +132,27 @@ concat_args:
 	movl 12(%ebp), %eax
 	movl %eax, CONCAT_ARGS_ARGV(%ebp)
 
+concat_args_while_argc:
+	cmpl $0, CONCAT_ARGS_ARGC(%ebp)
+	je concat_args_while_argc_end
+
+	# Since we have an address to an address here,
+	# we need to load the address to a regsiter
+	# so that we can address this address and grab
+	# the actual string address
+	movl CONCAT_ARGS_ARGV(%ebp), %eax
+	pushl (%eax)
+	pushl CONCAT_ARGS_BUFF(%ebp)
 	
+	call strcat
+
+	# --argc, ++argv
+	decl CONCAT_ARGS_ARGC(%ebp)
+	incl CONCAT_ARGS_ARGV(%ebp)
+
+	jmp concat_args_while_argc
+
+concat_args_while_argc_end:
 
 	movl %ebp, %esp
 	popl %ebp
