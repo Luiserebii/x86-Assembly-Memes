@@ -111,7 +111,28 @@ concat_args:
 	pushl %ebp
 	movl %esp, %ebp
 
+	# Since we will be decrementing the argc value,
+	# and incrementing the address of the string array,
+	# we should store this as local variables
+	#
+	# NOTE: Why not simply modify the part of the stack passed?
+	# Might this save memory?
+	#
+	# NOTE: We don't use registers directly since we will be
+	# making function calls
+	.equ CONCAT_ARGS_NO_LVARS, 2
+	.equ CONCAT_ARGS_LVAR_BYTES, 4 * CONCAT_ARGS_NO_LVARS
+	subl $CONCAT_ARGS_LVAR_BYTES, %esp
+	
+	.equ CONCAT_ARGS_ARGC, -4
+	.equ CONCAT_ARGS_ARGV, -8
+	.equ CONCAT_ARGS_BUFF, 16
+	movl 8(%ebp), %eax
+	movl %eax, CONCAT_ARGS_ARGC(%ebp)
+	movl 12(%ebp), %eax
+	movl %eax, CONCAT_ARGS_ARGV(%ebp)
 
+	
 
 	movl %ebp, %esp
 	popl %ebp
