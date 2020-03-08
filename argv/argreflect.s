@@ -71,9 +71,9 @@ _start:
 	# string that exists
 	# This should probably be a function honestly
 	
-	# Increment argc into %eax
+	# Decrement argc into %eax
 	movl (%ebp), %eax
-	incl %eax
+	decl %eax
 
 	# Pass argv + 1 and argc val
 	# For argv + 1, we grab the address at %ebp and add 8 to obtain next
