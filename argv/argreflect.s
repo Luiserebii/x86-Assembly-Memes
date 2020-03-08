@@ -13,7 +13,7 @@
 
 .section .data
 title:
-	.ascii "==============\nargreflect\n=============\n\n\0"
+	.ascii "=============\nargreflect\n=============\n\n\0"
 name_init:
 	.ascii "name: \0"
 num_args_init:
@@ -67,6 +67,24 @@ _start:
 	movl $endl, -4(%ebp)
 	call strcat
 
+	# Final piece of program: concat each (argc - 1)
+	# string that exists
+	# This should probably be a function honestly
+	
+	# Increment argc into %eax
+	movl (%ebp), %eax
+	incl %eax
+
+	# Pass argv + 1 and argc val
+	# For argv + 1, we grab the address at %ebp and add 8 to obtain next
+	# NOTE: buffer is already on the stack, so it's convenient!
+	movl %ebp, %ebx
+	addl $8, %ebx
+
+	pushl %ebx
+	pushl %eax
+	call concat_args
+
 	# Print buffer
 	.equ WRITE_SYSCALL, 4
 	.equ STDOUT, 1
@@ -79,6 +97,26 @@ _start:
 	# Exit
 	movl $1, %eax
 	int $0x80
+
+#=============
+# concat_args
+#=============
+#  Takes three arguments. The first is expected to be a 32-bit
+#  number representing the number of arguments to concatenate, the second
+#  an address pointing to the first element of an array containing
+#  addresses to char arrays (think *argv[]), the third the string
+#  buffer to concatenate to.
+.type concat_args, @function
+concat_args:
+	pushl %ebp
+	movl %esp, %ebp
+
+
+
+	movl %ebp, %esp
+	popl %ebp
+	ret
+
 
 #=========
 # strcpy 
