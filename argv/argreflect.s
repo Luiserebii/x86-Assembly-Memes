@@ -53,6 +53,9 @@ _start:
 	# Concat in init num of args field
 	movl $num_args_init, -4(%ebp)
 	call strcat
+	
+	# Decrement argc by one, also
+	decl (%ebp)
 
 	# argc is at 0, so:
 	pushl $buffer_temp
@@ -71,10 +74,6 @@ _start:
 	# string that exists
 	# This should probably be a function honestly
 	
-	# Decrement argc into %eax
-	movl (%ebp), %eax
-	decl %eax
-
 	# Pass argv + 1 and argc val
 	# For argv + 1, we grab the address at %ebp and add 8 to obtain next
 	# NOTE: buffer is already on the stack, so it's convenient!
@@ -82,7 +81,7 @@ _start:
 	addl $8, %ebx
 
 	pushl %ebx
-	pushl %eax
+	pushl (%ebp)
 	call concat_args
 
 	# Print buffer
@@ -148,7 +147,7 @@ concat_args_while_argc:
 
 	# --argc, ++argv
 	decl CONCAT_ARGS_ARGC(%ebp)
-	incl CONCAT_ARGS_ARGV(%ebp)
+	addl $4, CONCAT_ARGS_ARGV(%ebp)
 
 	jmp concat_args_while_argc
 
