@@ -18,6 +18,8 @@ name_init:
 	.ascii "name: \0"
 num_args_init:
 	.ascii "num of args: \0"
+args_init:
+	.ascii "args: \n------\0"
 endl:
 	.ascii "\n\0"
 
@@ -73,6 +75,12 @@ _start:
 	# Final piece of program: concat each (argc - 1)
 	# string that exists
 	# This should probably be a function honestly
+
+	# Concat args_init to buffer
+	movl $args_init, -4(%ebp)
+	call strcat
+	movl $endl, -4(%ebp)
+	call strcat
 	
 	# Pass argv + 1 and argc val
 	# For argv + 1, we grab the address at %ebp and add 8 to obtain next
@@ -144,10 +152,17 @@ concat_args_while_argc:
 	pushl CONCAT_ARGS_BUFF(%ebp)
 	
 	call strcat
+	
+	# Concat \n, also
+	movl $endl, 4(%esp)
+	call strcat
 
 	# --argc, ++argv
 	decl CONCAT_ARGS_ARGC(%ebp)
 	addl $4, CONCAT_ARGS_ARGV(%ebp)
+
+	# Clear part of stack for function call
+	addl $8, %esp
 
 	jmp concat_args_while_argc
 
